@@ -4,166 +4,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zhiqi's Website</title>
+
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      padding: 1vw;
+    }
+
+    /*
+      所有句子都放在同一个文字流中，而不是分别放进多个 h1。
+      因此它们会横向连续排列，空间不足时才自动换行。
+    */
+    .pi-text {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+      line-height: 0.92;
+
+      /* 允许在任意字母位置换行，包括单词中间。 */
+      overflow-wrap: anywhere;
+      word-break: break-all;
+    }
+
+    .pi-text span {
+      display: inline;
+
+      /*
+        每个圆周率数字控制一句话的字号：
+        1 → 1vw，2 → 2vw，……，9 → 9vw，0 → 10vw。
+        1vw 等于浏览器可视宽度的 1%。
+      */
+      font-size: calc(var(--pi-size) * 1vw);
+    }
+  </style>
 </head>
+
 <body>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 1vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 4vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 1vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 5vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 2vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 6vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>  
-  <h1 style="font-size: clamp(48px, 5vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 5vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 8vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>  
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 7vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>  
-  <h1 style="font-size: clamp(48px, 2vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 8vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 4vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>  
-  <h1 style="font-size: clamp(48px, 6vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 2vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 6vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 4vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>  
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 8vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>  
-  <h1 style="font-size: clamp(48px, 2vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 7vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 5vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 10vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 2vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 8vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1> 
-  <h1 style="font-size: clamp(48px, 8vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 4vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 1vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1> 
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 7vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 1vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1> 
-  <h1 style="font-size: clamp(48px, 6vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1> 
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 9vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 3vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1> 
-  <h1 style="font-size: clamp(48px, 7vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 5vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 1vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1> 
-  <h1 style="font-size: clamp(48px, 10vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 5vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1>
-  <h1 style="font-size: clamp(48px, 8vw, 150px); word-break: break-all;">
-    Hello, Zhiqi's website is building...... 
-  </h1> 
+  <p class="pi-text" id="pi-text"></p>
+
+  <script>
+    const phrase = "Hello, Zhiqi's website is building...... ";
+
+    // 圆周率小数点后的数字；可以继续在末尾添加更多数字。
+    const piDigits =
+      "3141592653589793238462643383279502884197169399375105820974944592307816406286";
+
+    const container = document.getElementById("pi-text");
+
+    for (const digit of piDigits) {
+      const span = document.createElement("span");
+
+      // 按你的规则：0 不使用 0vw，而是使用 10vw。
+      const size = digit === "0" ? 10 : Number(digit);
+
+      span.style.setProperty("--pi-size", size);
+      span.textContent = phrase;
+      container.appendChild(span);
+    }
+  </script>
 </body>
 </html>
