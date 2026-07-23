@@ -30,9 +30,6 @@
     .pi-text span {
       display: inline;
 
-      /*
-        1 → 1vw，2 → 2vw，……，9 → 9vw，0 → 10vw。
-      */
       font-size: calc(var(--pi-size) * 1vw);
     }
   </style>
@@ -63,7 +60,6 @@
     for (const digit of piDigits) {
       const span = document.createElement("span");
 
-      // 0 使用 10vw。
       const size = digit === "0" ? 10 : Number(digit);
 
       span.style.setProperty("--pi-size", size);
