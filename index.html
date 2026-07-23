@@ -16,28 +16,26 @@
       padding: 1vw;
     }
 
-    /*
-      所有句子都放在同一个文字流中，而不是分别放进多个 h1。
-      因此它们会横向连续排列，空间不足时才自动换行。
-    */
     .pi-text {
       margin: 0;
       font-family: Georgia, "Times New Roman", serif;
       font-weight: 700;
       line-height: 0.92;
 
-      /* 允许在任意字母位置换行，包括单词中间。 */
+      /*
+        允许单词内部换行。
+        line-break: anywhere 还会放宽连续标点的换行限制。
+      */
       overflow-wrap: anywhere;
       word-break: break-all;
+      line-break: anywhere;
     }
 
     .pi-text span {
       display: inline;
 
       /*
-        每个圆周率数字控制一句话的字号：
         1 → 1vw，2 → 2vw，……，9 → 9vw，0 → 10vw。
-        1vw 等于浏览器可视宽度的 1%。
       */
       font-size: calc(var(--pi-size) * 1vw);
     }
@@ -50,20 +48,37 @@
   <script>
     const phrase = "Hello, Zhiqi's website is building...... ";
 
-    // 圆周率小数点后的数字；可以继续在末尾添加更多数字。
     const piDigits =
       "31415926535897932384626433832795028841971693993751058209749445923078164062862089996280348253421170679";
 
     const container = document.getElementById("pi-text");
 
+    /**
+     * 将文字添加到元素中，并在每个字符后插入一个不可见的换行机会。
+     * 因此单词和连续标点都可以从任意位置断开。
+     */
+    function appendBreakableText(element, text) {
+      const fragment = document.createDocumentFragment();
+
+      for (const character of text) {
+        fragment.appendChild(document.createTextNode(character));
+        fragment.appendChild(document.createElement("wbr"));
+      }
+
+      element.appendChild(fragment);
+    }
+
     for (const digit of piDigits) {
       const span = document.createElement("span");
 
-      // 按你的规则：0 不使用 0vw，而是使用 10vw。
+      // 0 使用 10vw。
       const size = digit === "0" ? 10 : Number(digit);
 
       span.style.setProperty("--pi-size", size);
-      span.textContent = phrase;
+
+      // 不再直接使用 span.textContent = phrase。
+      appendBreakableText(span, phrase);
+
       container.appendChild(span);
     }
   </script>
