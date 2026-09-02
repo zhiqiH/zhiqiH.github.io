@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Zhiqi's Website</title>
+  <meta name="color-scheme" content="light">
+  <title>Zhiqi's Infinite Pi Website</title>
 
   <style>
     *,
@@ -23,11 +24,13 @@
       min-height: 100dvh;
       padding: max(8px, 1vw);
       overflow-x: hidden;
+      background: #fff;
+      color: #000;
     }
 
     .pi-text {
-      margin: 0;
       width: 100%;
+      margin: 0;
       font-family: Georgia, "Times New Roman", serif;
       font-weight: 700;
       line-height: 0.92;
@@ -35,6 +38,8 @@
       text-align-last: justify;
       overflow-wrap: anywhere;
       word-break: break-all;
+      -webkit-hyphens: none;
+      hyphens: none;
     }
 
     .pi-text span {
@@ -42,32 +47,281 @@
       font-size: 16px;
       font-size: calc(var(--pi-size, 4) * 1vw);
     }
+
+    .load-marker {
+      width: 100%;
+      height: 1px;
+      pointer-events: none;
+    }
+
+    .status {
+      position: fixed;
+      right: max(10px, 1.5vw);
+      bottom: max(10px, env(safe-area-inset-bottom));
+      z-index: 1;
+      margin: 0;
+      padding: 0.35em 0.55em;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      color: #555;
+      font: 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      opacity: 0;
+      transition: opacity 160ms ease;
+      pointer-events: none;
+    }
+
+    .status[data-visible="true"] {
+      opacity: 1;
+    }
+
+    noscript {
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .status {
+        transition: none;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <p class="pi-text" id="pi-text"></p>
+  <main class="pi-text" id="pi-text" aria-hidden="true"></main>
+  <div class="load-marker" id="load-marker" aria-hidden="true"></div>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <noscript>This page needs JavaScript to calculate and continue the digits of pi.</noscript>
 
   <script>
     (function () {
-      var phrase = "Hello, Zhiqi's website is building...... ";
-      var piDigits =
-        "31415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679";
+      "use strict";
+
+      var PHRASE = "Hello, Zhiqi's website is building...... ";
+      var BATCH_SIZE = 12;
+      var LOAD_AHEAD_PX = 1600;
 
       var container = document.getElementById("pi-text");
-      var fragment = document.createDocumentFragment();
+      var marker = document.getElementById("load-marker");
+      var status = document.getElementById("status");
+      var worker = null;
+      var mainThreadNextDigit = null;
+      var requestPending = false;
+      var renderedDigits = 0;
 
-      for (var i = 0; i < piDigits.length; i += 1) {
-        var digit = piDigits.charAt(i);
-        var span = document.createElement("span");
-        var size = digit === "0" ? 10 : Number(digit);
-
-        span.style.setProperty("--pi-size", size);
-        span.textContent = phrase;
-        fragment.appendChild(span);
+      function setStatus(message, visible) {
+        status.textContent = message;
+        status.setAttribute("data-visible", visible ? "true" : "false");
       }
 
-      container.appendChild(fragment);
+      function createPiStepper() {
+        var q = 1n;
+        var r = 0n;
+        var t = 1n;
+        var k = 1n;
+        var n = 3n;
+        var l = 3n;
+
+        return function nextDigit() {
+          while (true) {
+            var oldQ;
+            var oldR;
+            var oldT;
+            var oldK;
+            var oldN;
+            var oldL;
+
+            if (4n * q + r - t < n * t) {
+              oldQ = q;
+              oldR = r;
+              oldT = t;
+              oldN = n;
+
+              q = 10n * oldQ;
+              r = 10n * (oldR - oldN * oldT);
+              n = (10n * (3n * oldQ + oldR)) / oldT - 10n * oldN;
+
+              return Number(oldN);
+            }
+
+            oldQ = q;
+            oldR = r;
+            oldT = t;
+            oldK = k;
+            oldL = l;
+
+            q = oldQ * oldK;
+            r = (2n * oldQ + oldR) * oldL;
+            t = oldT * oldL;
+            k = oldK + 1n;
+            n = (oldQ * (7n * oldK) + 2n + oldR * oldL) / (oldT * oldL);
+            l = oldL + 2n;
+          }
+        };
+      }
+
+      function appendDigits(digits) {
+        var fragment = document.createDocumentFragment();
+
+        for (var i = 0; i < digits.length; i += 1) {
+          var digit = digits[i];
+          var span = document.createElement("span");
+          var size = digit === 0 ? 10 : digit;
+
+          span.style.setProperty("--pi-size", String(size));
+          span.textContent = PHRASE;
+          fragment.appendChild(span);
+        }
+
+        container.appendChild(fragment);
+        renderedDigits += digits.length;
+        requestPending = false;
+        setStatus(renderedDigits + " digits of pi", false);
+
+        window.requestAnimationFrame(maybeLoadMore);
+      }
+
+      function makeWorker() {
+        var source = "(" + function () {
+          "use strict";
+
+          var q = 1n;
+          var r = 0n;
+          var t = 1n;
+          var k = 1n;
+          var n = 3n;
+          var l = 3n;
+
+          function nextDigit() {
+            while (true) {
+              var oldQ;
+              var oldR;
+              var oldT;
+              var oldK;
+              var oldN;
+              var oldL;
+
+              if (4n * q + r - t < n * t) {
+                oldQ = q;
+                oldR = r;
+                oldT = t;
+                oldN = n;
+
+                q = 10n * oldQ;
+                r = 10n * (oldR - oldN * oldT);
+                n = (10n * (3n * oldQ + oldR)) / oldT - 10n * oldN;
+
+                return Number(oldN);
+              }
+
+              oldQ = q;
+              oldR = r;
+              oldT = t;
+              oldK = k;
+              oldL = l;
+
+              q = oldQ * oldK;
+              r = (2n * oldQ + oldR) * oldL;
+              t = oldT * oldL;
+              k = oldK + 1n;
+              n = (oldQ * (7n * oldK) + 2n + oldR * oldL) / (oldT * oldL);
+              l = oldL + 2n;
+            }
+          }
+
+          self.onmessage = function (event) {
+            var count = event.data.count;
+            var digits = [];
+
+            for (var i = 0; i < count; i += 1) {
+              digits.push(nextDigit());
+            }
+
+            self.postMessage(digits);
+          };
+        } + ")();";
+
+        var blobUrl = URL.createObjectURL(new Blob([source], { type: "text/javascript" }));
+        var createdWorker = new Worker(blobUrl);
+        URL.revokeObjectURL(blobUrl);
+        return createdWorker;
+      }
+
+      function switchToMainThread() {
+        if (worker) {
+          worker.terminate();
+          worker = null;
+        }
+
+        if (!mainThreadNextDigit) {
+          mainThreadNextDigit = createPiStepper();
+
+          for (var i = 0; i < renderedDigits; i += 1) {
+            mainThreadNextDigit();
+          }
+        }
+
+        requestPending = false;
+        requestMoreDigits();
+      }
+
+      function requestMoreDigits() {
+        if (requestPending) {
+          return;
+        }
+
+        requestPending = true;
+        setStatus("Calculating pi…", true);
+
+        if (worker) {
+          worker.postMessage({ count: BATCH_SIZE });
+          return;
+        }
+
+        window.setTimeout(function () {
+          var digits = [];
+          for (var i = 0; i < BATCH_SIZE; i += 1) {
+            digits.push(mainThreadNextDigit());
+          }
+          appendDigits(digits);
+        }, 0);
+      }
+
+      function maybeLoadMore() {
+        var markerTop = marker.getBoundingClientRect().top;
+        if (markerTop < window.innerHeight + LOAD_AHEAD_PX) {
+          requestMoreDigits();
+        }
+      }
+
+      if (typeof BigInt !== "function") {
+        setStatus("Please update this browser to continue calculating pi.", true);
+        return;
+      }
+
+      try {
+        worker = makeWorker();
+        worker.onmessage = function (event) {
+          appendDigits(event.data);
+        };
+        worker.onerror = switchToMainThread;
+      } catch (error) {
+        mainThreadNextDigit = createPiStepper();
+      }
+
+      if ("IntersectionObserver" in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          if (entries[0].isIntersecting) {
+            requestMoreDigits();
+          }
+        }, { rootMargin: LOAD_AHEAD_PX + "px 0px" });
+
+        observer.observe(marker);
+      } else {
+        window.addEventListener("scroll", maybeLoadMore, { passive: true });
+        window.addEventListener("resize", maybeLoadMore);
+      }
+
+      requestMoreDigits();
     }());
   </script>
 </body>

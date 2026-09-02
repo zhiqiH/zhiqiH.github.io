@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Zhiqi's Website</title>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: max(8px, 1vw);
+      overflow-x: hidden;
+    }
+
+    .pi-text {
+      margin: 0;
+      width: 100%;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 700;
+      line-height: 0.92;
+      text-align: justify;
+      text-align-last: justify;
+      overflow-wrap: anywhere;
+      word-break: break-all;
+    }
+
+    .pi-text span {
+      display: inline;
+      font-size: 16px;
+      font-size: calc(var(--pi-size, 4) * 1vw);
+    }
+  </style>
+</head>
+
+<body>
+  <p class="pi-text" id="pi-text"></p>
+
+  <script>
+    (function () {
+      var phrase = "Hello, Zhiqi's website is building...... ";
+      var piDigits =
+        "31415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679";
+
+      var container = document.getElementById("pi-text");
+      var fragment = document.createDocumentFragment();
+
+      for (var i = 0; i < piDigits.length; i += 1) {
+        var digit = piDigits.charAt(i);
+        var span = document.createElement("span");
+        var size = digit === "0" ? 10 : Number(digit);
+
+        span.style.setProperty("--pi-size", size);
+        span.textContent = phrase;
+        fragment.appendChild(span);
+      }
+
+      container.appendChild(fragment);
+    }());
+  </script>
+</body>
+</html>
